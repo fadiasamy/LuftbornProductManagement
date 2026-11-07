@@ -1,0 +1,23 @@
+# Visual Studio
+.vs/
+**/bin/
+**/obj/
+
+# Node
+**/node_modules/
+**/dist/
+
+# Environment variables
+.env
+.env.*
+
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# User-specific files
+*.user
+*.suo

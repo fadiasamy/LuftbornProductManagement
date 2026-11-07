@@ -1,0 +1,74 @@
+@use 'variables' as *;
+
+@mixin button-variant($background, $color) {
+  background: $background;
+  color: $color;
+}
+
+.button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: $radius-small;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s, box-shadow 0.15s, transform 0.05s;
+
+  &:hover:not(:disabled) {
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: $focus-ring;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &--large {
+    padding: 12px 20px;
+  }
+
+  &--primary {
+    @include button-variant($color-primary, #ffffff);
+
+    &:hover:not(:disabled) {
+      background: #4338ca;
+    }
+  }
+
+  &--secondary {
+    @include button-variant($color-secondary-bg, $color-secondary-text);
+
+    &:hover:not(:disabled) {
+      background: #dfe2ec;
+    }
+  }
+
+  &--edit {
+    @include button-variant($color-edit-bg, $color-edit-text);
+    margin-right: 6px;
+    padding: 8px 14px;
+
+    &:hover:not(:disabled) {
+      background: #dde0ff;
+    }
+  }
+
+  &--danger {
+    @include button-variant($color-danger-bg, $color-danger-text);
+    padding: 8px 14px;
+
+    &:hover:not(:disabled) {
+      background: #fecaca;
+    }
+  }
+}

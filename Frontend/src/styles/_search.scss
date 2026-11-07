@@ -1,0 +1,14 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.search-bar {
+  margin-bottom: 16px;
+
+  input {
+    @include text-field;
+    padding: 12px 16px;
+    border-radius: $radius-medium;
+    font-size: 14px;
+    background: $color-surface;
+  }
+}

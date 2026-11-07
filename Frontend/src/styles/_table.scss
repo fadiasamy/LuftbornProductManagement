@@ -1,0 +1,98 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.product-table {
+  @include card;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+
+  th,
+  td {
+    padding: 14px 16px;
+    border-bottom: 1px solid $color-border;
+    text-align: left;
+    font-size: 14px;
+    vertical-align: middle;
+  }
+
+  th {
+    background: $color-surface-muted;
+    color: $color-text-muted;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  tbody tr {
+    transition: background 0.12s;
+
+    &:hover {
+      background: $color-surface-muted;
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  &__id {
+    color: $color-text-muted;
+  }
+
+  &__name {
+    font-weight: 600;
+    color: $color-text-strong;
+  }
+
+  &__description {
+    max-width: 320px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: $color-text-muted;
+  }
+
+  &__number {
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__actions {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  &__empty {
+    padding: 40px 16px;
+    text-align: center;
+    color: $color-text-muted;
+  }
+
+  @include tablet-and-below {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+
+    th,
+    td {
+      padding: 12px;
+    }
+  }
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: $color-success-bg;
+  color: $color-success-text;
+
+  &--out {
+    background: $color-danger-bg;
+    color: $color-danger-text;
+  }
+}

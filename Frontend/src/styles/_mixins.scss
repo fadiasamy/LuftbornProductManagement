@@ -1,0 +1,26 @@
+@use 'variables' as *;
+
+@mixin tablet-and-below {
+  @media (max-width: $breakpoint-tablet) {
+    @content;
+  }
+}
+
+@mixin text-field {
+  display: block;
+  width: 100%;
+  border: 1px solid $color-border-input;
+  font-family: inherit;
+  outline: none;
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: $focus-ring;
+  }
+}
+
+@mixin card {
+  background: $color-surface;
+  border-radius: $radius-large;
+  box-shadow: $shadow-card;
+}

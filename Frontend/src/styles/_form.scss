@@ -1,0 +1,64 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.product-form {
+  @include card;
+  padding: 24px 28px 28px;
+  margin-bottom: 24px;
+  border-top: 3px solid $color-primary;
+
+  h2 {
+    margin: 0 0 20px;
+    font-size: 18px;
+    color: $color-text-strong;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px 20px;
+
+    @include tablet-and-below {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__field {
+    &--full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      color: $color-secondary-text;
+    }
+
+    input,
+    textarea {
+      @include text-field;
+      padding: 11px 12px;
+      border-radius: $radius-small;
+      font-size: 14px;
+      background: $color-surface;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+  }
+
+  .alert {
+    margin: 16px 0 0;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 24px;
+  }
+}

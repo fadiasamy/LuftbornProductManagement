@@ -1,0 +1,28 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: $font-family;
+  background: $color-background;
+  color: $color-text;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.product-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 64px;
+
+  @include tablet-and-below {
+    padding: 24px 16px 40px;
+  }
+}
