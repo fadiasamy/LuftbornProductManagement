@@ -1,10 +1,10 @@
 ﻿using ProductManagement.Application.DTOs;
 
-namespace ProductManagement.Application.Services;
+namespace ProductManagement.Application.Interfaces;
 
 public interface IProductService
 {
-    Task<IEnumerable<ProductDto>> GetAllAsync();
+    Task<PagedResultDto<ProductDto>> GetAllAsync(int pageNumber, int pageSize);
 
     Task<ProductDto?> GetByIdAsync(int id);
 

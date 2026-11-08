@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProductManagement.Application.DTOs;
 using ProductManagement.Application.Interfaces;
 using ProductManagement.Domain.Entities;
 using ProductManagement.Infrastructure.Persistence;
@@ -14,9 +15,26 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Product>> GetAllAsync()
+    public async Task<PagedResultDto<Product>> GetAllAsync(int pageNumber, int pageSize)
     {
-        return await _context.Products.AsNoTracking().ToListAsync();
+        var query = _context.Products.AsNoTracking();
+
+        var totalCount = await query.CountAsync();
+
+        var products = await query
+            .OrderBy(p => p.Id)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return new PagedResultDto<Product>
+        {
+            Items = products,
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            TotalCount = totalCount,
+            TotalPages = (int)Math.Ceiling((double)totalCount / pageSize)
+        };
     }
 
     public async Task<Product?> GetByIdAsync(int id)

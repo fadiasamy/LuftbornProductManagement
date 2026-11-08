@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProductManagement.Application.DTOs;
-using ProductManagement.Application.Services;
+using ProductManagement.Application.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace ProductManagement.Api.Controllers;
 
@@ -16,9 +17,9 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery, Range(1, int.MaxValue)] int pageNumber = 1, [FromQuery, Range(1, 100)] int pageSize = 5)
     {
-        var products = await _productService.GetAllAsync();
+        var products = await _productService.GetAllAsync(pageNumber, pageSize);
 
         return Ok(products);
     }

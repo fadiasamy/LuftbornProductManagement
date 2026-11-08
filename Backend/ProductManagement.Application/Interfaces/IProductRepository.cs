@@ -1,12 +1,13 @@
 ﻿
 
 using ProductManagement.Domain.Entities;
+using ProductManagement.Application.DTOs;
 
 namespace ProductManagement.Application.Interfaces
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<Product>> GetAllAsync();
+        Task<PagedResultDto<Product>> GetAllAsync(int pageNumber, int pageSize);
 
         Task<Product?> GetByIdAsync(int id);
 

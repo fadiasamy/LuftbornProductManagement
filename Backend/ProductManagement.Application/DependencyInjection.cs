@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ProductManagement.Application.Services;
+using ProductManagement.Application.Interfaces;
+
 
 namespace ProductManagement.Application;
 
