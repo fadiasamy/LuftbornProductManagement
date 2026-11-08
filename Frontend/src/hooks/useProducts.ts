@@ -7,23 +7,29 @@ function toErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'Something went wrong.'
 }
 
-export function useProducts() {
+export function useProducts(token: string | null) {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
 
-  // Pagination state
   const [pageNumber, setPageNumber] = useState(1)
   const [pageSize] = useState(5)
   const [totalPages, setTotalPages] = useState(0)
   const [totalCount, setTotalCount] = useState(0)
 
   const refresh = useCallback(async (page = pageNumber) => {
+    if (!token) return
+
     try {
       setError('')
-      const result = await productApi.getProducts(page, pageSize)
+
+      const result = await productApi.getProducts(
+        page,
+        pageSize,
+        token
+      )
 
       setProducts(result.items)
       setTotalPages(result.totalPages)
@@ -33,14 +39,23 @@ export function useProducts() {
     } finally {
       setLoading(false)
     }
-  }, [pageNumber, pageSize])
+  }, [pageNumber, pageSize, token])
 
   useEffect(() => {
+    if (!token) {
+      setProducts([])
+      setTotalPages(0)
+      setTotalCount(0)
+      setLoading(false)
+      return
+    }
+
     let ignore = false
 
     setLoading(true)
+    setError('')
 
-    productApi.getProducts(pageNumber, pageSize)
+    productApi.getProducts(pageNumber, pageSize, token)
       .then((result) => {
         if (!ignore) {
           setProducts(result.items)
@@ -58,14 +73,17 @@ export function useProducts() {
     return () => {
       ignore = true
     }
-  }, [pageNumber, pageSize])
+  }, [pageNumber, pageSize, token])
 
   const clearMessages = useCallback(() => {
     setError('')
     setSuccessMessage('')
   }, [])
 
-  const runAndRefresh = async (action: () => Promise<void>, successText: string) => {
+  const runAndRefresh = async (
+    action: () => Promise<void>,
+    successText: string
+  ) => {
     try {
       clearMessages()
       await action()
@@ -78,28 +96,40 @@ export function useProducts() {
     }
   }
 
-  const saveProduct = async (input: ProductInput, editingId?: number) => {
+  const saveProduct = async (
+    input: ProductInput,
+    editingId?: number
+  ) => {
+    if (!token) return false
+
     setSaving(true)
 
-    const isEditing = editingId !== undefined
-    const succeeded = await runAndRefresh(
-      () => (
-        isEditing
-          ? productApi.updateProduct(editingId, input)
-          : productApi.createProduct(input)
-      ),
-      isEditing ? 'Product updated successfully!' : 'Product added successfully!',
-    )
+    try {
+      const isEditing = editingId !== undefined
 
-    setSaving(false)
-    return succeeded
+      return await runAndRefresh(
+        () => (
+          isEditing
+            ? productApi.updateProduct(editingId, input, token)
+            : productApi.createProduct(input, token)
+        ),
+        isEditing
+          ? 'Product updated successfully!'
+          : 'Product added successfully!'
+      )
+    } finally {
+      setSaving(false)
+    }
   }
 
-  const removeProduct = (id: number) =>
-    runAndRefresh(
-      () => productApi.deleteProduct(id),
-      'Product deleted successfully!',
+  const removeProduct = async (id: number) => {
+    if (!token) return false
+
+    return runAndRefresh(
+      () => productApi.deleteProduct(id, token),
+      'Product deleted successfully!'
     )
+  }
 
   return {
     products,

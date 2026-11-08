@@ -28,39 +28,73 @@ async function ensureSuccess(response: Response, fallback: string): Promise<void
 
 export async function getProducts(
   pageNumber: number,
-  pageSize: number
+  pageSize: number,
+  token: string
 ): Promise<PagedResult<Product>> {
   const response = await fetch(
-    `${API_URL}?pageNumber=${pageNumber}&pageSize=${pageSize}`
-  );
+    `${API_URL}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+    {
+      headers: getAuthHeaders(token),
+    }
+  )
 
-  await ensureSuccess(response, 'Failed to fetch products.');
-
-  return response.json();
+  await ensureSuccess(response, 'Failed to fetch products.')
+  return response.json()
 }
 
-export async function createProduct(input: ProductInput): Promise<void> {
+export async function createProduct(input: ProductInput, token: string): Promise<void> {
   const response = await fetch(API_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: getAuthHeaders(token, true),
     body: JSON.stringify(input),
   })
 
   await ensureSuccess(response, 'Failed to add product.')
 }
 
-export async function updateProduct(id: number, input: ProductInput): Promise<void> {
+export async function updateProduct(id: number,input: ProductInput,token: string): Promise<void> {
   const response = await fetch(`${API_URL}/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: getAuthHeaders(token, true),
     body: JSON.stringify(input),
   })
 
   await ensureSuccess(response, 'Failed to update product.')
 }
 
-export async function deleteProduct(id: number): Promise<void> {
-  const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' })
+export async function deleteProduct(id: number,token: string): Promise<void> {
+  const response = await fetch(`${API_URL}/${id}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(token),
+  })
 
   await ensureSuccess(response, 'Failed to delete product.')
 }
+
+export interface CurrentUser {
+  id: string | null
+  email: string | null
+  name: string | null
+}
+
+export async function getCurrentUser(
+  googleToken: string
+): Promise<CurrentUser> {
+  const response = await fetch('/api/auth/me', {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${googleToken}`,
+    },
+  })
+
+  await ensureSuccess(response, 'Google authentication failed.')
+
+  return response.json()
+}
+function getAuthHeaders(token: string, json = false) {
+  return {
+    Authorization: `Bearer ${token}`,
+    ...(json ? { 'Content-Type': 'application/json' } : {}),
+  }
+}
+
