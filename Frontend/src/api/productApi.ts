@@ -1,5 +1,4 @@
-import type { Product, ProductInput } from '../types/product'
-
+import type { Product, ProductInput, PagedResult } from '../types/product';
 const API_URL = '/api/products'
 
 interface ApiErrorBody {
@@ -27,11 +26,17 @@ async function ensureSuccess(response: Response, fallback: string): Promise<void
   }
 }
 
-export async function getProducts(): Promise<Product[]> {
-  const response = await fetch(API_URL)
-  await ensureSuccess(response, 'Failed to fetch products.')
+export async function getProducts(
+  pageNumber: number,
+  pageSize: number
+): Promise<PagedResult<Product>> {
+  const response = await fetch(
+    `${API_URL}?pageNumber=${pageNumber}&pageSize=${pageSize}`
+  );
 
-  return response.json()
+  await ensureSuccess(response, 'Failed to fetch products.');
+
+  return response.json();
 }
 
 export async function createProduct(input: ProductInput): Promise<void> {

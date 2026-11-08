@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useState } from 'react'
 import * as productApi from '../api/productApi'
 import type { Product, ProductInput } from '../types/product'
@@ -13,23 +14,39 @@ export function useProducts() {
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
 
-  const refresh = useCallback(async () => {
+  // Pagination state
+  const [pageNumber, setPageNumber] = useState(1)
+  const [pageSize] = useState(5)
+  const [totalPages, setTotalPages] = useState(0)
+  const [totalCount, setTotalCount] = useState(0)
+
+  const refresh = useCallback(async (page = pageNumber) => {
     try {
-      setProducts(await productApi.getProducts())
+      setError('')
+      const result = await productApi.getProducts(page, pageSize)
+
+      setProducts(result.items)
+      setTotalPages(result.totalPages)
+      setTotalCount(result.totalCount)
     } catch (err) {
       setError(toErrorMessage(err))
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [pageNumber, pageSize])
 
   useEffect(() => {
     let ignore = false
 
-    productApi
-      .getProducts()
-      .then((loadedProducts) => {
-        if (!ignore) setProducts(loadedProducts)
+    setLoading(true)
+
+    productApi.getProducts(pageNumber, pageSize)
+      .then((result) => {
+        if (!ignore) {
+          setProducts(result.items)
+          setTotalPages(result.totalPages)
+          setTotalCount(result.totalCount)
+        }
       })
       .catch((err) => {
         if (!ignore) setError(toErrorMessage(err))
@@ -41,7 +58,7 @@ export function useProducts() {
     return () => {
       ignore = true
     }
-  }, [])
+  }, [pageNumber, pageSize])
 
   const clearMessages = useCallback(() => {
     setError('')
@@ -66,7 +83,11 @@ export function useProducts() {
 
     const isEditing = editingId !== undefined
     const succeeded = await runAndRefresh(
-      () => (isEditing ? productApi.updateProduct(editingId, input) : productApi.createProduct(input)),
+      () => (
+        isEditing
+          ? productApi.updateProduct(editingId, input)
+          : productApi.createProduct(input)
+      ),
       isEditing ? 'Product updated successfully!' : 'Product added successfully!',
     )
 
@@ -75,7 +96,10 @@ export function useProducts() {
   }
 
   const removeProduct = (id: number) =>
-    runAndRefresh(() => productApi.deleteProduct(id), 'Product deleted successfully!')
+    runAndRefresh(
+      () => productApi.deleteProduct(id),
+      'Product deleted successfully!',
+    )
 
   return {
     products,
@@ -86,5 +110,10 @@ export function useProducts() {
     clearMessages,
     saveProduct,
     removeProduct,
+    pageNumber,
+    setPageNumber,
+    pageSize,
+    totalPages,
+    totalCount,
   }
 }
