@@ -7,24 +7,41 @@ The application provides product management functionality through a RESTful API 
 ## Technologies Used
 
 ### Backend
-- ASP.NET Core Web API (.NET 8)
-- Entity Framework Core
-- SQL Server
-- C#
-- LINQ
-- Clean Architecture
-- Repository Pattern
-- Service Layer
-- DTOs (Data Transfer Objects)
-- Asynchronous Programming
-- Global Exception Handling Middleware
+
+- Create, retrieve, update, and delete products (CRUD).
+- RESTful API endpoints.
+- Pagination with configurable page number and page size.
+- Input validation for pagination parameters.
+- Entity Framework Core for database operations.
+- Repository and Service patterns for separation of concerns.
+- DTOs to control data exposed to the client.
+- Asynchronous database operations.
+- Global exception handling middleware.
+- SQL Server database integration.
+- Google OAuth 2.0 authentication.
+- Google ID Token validation on the backend.
+- Secured API endpoints using JWT/authorization mechanisms.
 
 ### Frontend
-- React
-- TypeScript
-- Vite
-- SCSS
-- Fetch API
+
+- Display products in a table.
+- Add new products.
+- Edit existing products.
+- Delete products.
+- Search products.
+- Loading and error handling.
+- Success and error notifications.
+- Integration with the backend API.
+- Google Sign-In integration using Google Identity Services.
+- Authentication token handling and secure communication with the backend.
+
+### Authentication & Security
+
+- Implemented Single Sign-On (SSO) using Google OAuth 2.0.
+- Integrated Google Sign-In into the React frontend.
+- Backend validation of Google ID Tokens.
+- Protected API endpoints using authorization.
+- Authenticated requests between the frontend and backend.
 
 ## Project Structure
 
